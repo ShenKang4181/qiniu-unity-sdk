@@ -19,12 +19,13 @@ namespace Qiniu.Storage
 			httpManager = new HttpManager(false);
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra extra)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra extra ,
+																		    System.IProgress<float> progress = null )
+        {
 			try
 			{
 				FileStream stream = new FileStream(localFile, FileMode.Open);
-				return await UploadStream(stream, key, token, extra);
+				return await UploadStream(stream, key, token, extra,progress);
 			}
 			catch (Exception ex)
 			{
@@ -34,14 +35,16 @@ namespace Qiniu.Storage
 			}
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadData(byte[] data, string key, string token, PutExtra extra)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadData(byte[] data, string key, string token, PutExtra extra ,
+																			System.IProgress<float> progress = null )
+        {
 			MemoryStream stream = new MemoryStream(data);
-			return await UploadStream(stream, key, token, extra);
+			return await UploadStream(stream, key, token, extra,progress);
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string token, PutExtra putExtra)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string token, PutExtra putExtra , 
+																			  System.IProgress<float> progress = null )
+        {
 			if (putExtra == null)
 			{
 				putExtra = new PutExtra();
@@ -133,7 +136,7 @@ namespace Qiniu.Storage
 					}
 					string url = await config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
 					putExtra.ProgressHandler(stream.Length / 5, stream.Length);
-					httpResult = await httpManager.PostMultipart(url, memoryStream2.ToArray(), text, null);
+					httpResult = await httpManager.PostMultipart(url, memoryStream2.ToArray(), text, null,false,progress);
 					putExtra.ProgressHandler(stream.Length, stream.Length);
 					if (httpResult.Code == 200)
 					{

@@ -18,8 +18,9 @@ namespace Qiniu.Storage
 			return await formUploader.UploadData(data, key, token, extra);
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra extra)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra extra ,
+																			System.IProgress<float> progress = null )
+        {
 			HttpResult httpResult = new HttpResult();
 			System.IO.FileInfo fileInfo = new System.IO.FileInfo(localFile);
 			if (fileInfo.Length > config.PutThreshold)
@@ -28,11 +29,12 @@ namespace Qiniu.Storage
 				return await resumableUploader.UploadFile(localFile, key, token, extra);
 			}
 			FormUploader formUploader = new FormUploader(config);
-			return await formUploader.UploadFile(localFile, key, token, extra);
+			return await formUploader.UploadFile(localFile, key, token, extra,progress);
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string token, PutExtra extra)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string token, PutExtra extra ,
+																		      System.IProgress<float> progress = null )
+        {
 			HttpResult httpResult = new HttpResult();
 			if (stream.Length > config.PutThreshold)
 			{
@@ -40,7 +42,7 @@ namespace Qiniu.Storage
 				return await resumableUploader.UploadStream(stream, key, token, extra);
 			}
 			FormUploader formUploader = new FormUploader(config);
-			return await formUploader.UploadStream(stream, key, token, extra);
+			return await formUploader.UploadStream(stream, key, token, extra,progress);
 		}
 	}
 }

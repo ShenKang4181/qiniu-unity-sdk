@@ -1032,8 +1032,13 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostMultipart(string url, byte[] data, string boundary, string token, bool binaryMode = false)
-		{
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostMultipart(string url, 
+                                                                               byte[] data,
+                                                                               string boundary,
+                                                                               string token,
+                                                                               bool binaryMode = false , 
+                                                                               System.IProgress<float> progress = null )
+        {
 			HttpResult hr = new HttpResult();
             //HttpWebRequest httpWebRequest = null;
             UnityWebRequest request = null;
@@ -1063,7 +1068,12 @@ namespace Qiniu.Http
                 request.uploadHandler = new UploadHandlerRaw( data );
                 request.downloadHandler = new DownloadHandlerBuffer( );
                 //HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
-                await request.SendWebRequest( );
+                var  operation =  request.SendWebRequest( );
+                while (!operation .isDone)
+                {
+                    progress?.Report( request.uploadProgress );
+                    await UniTask.Yield( );
+                }
                 //if (httpWebResponse != null)
                 if ( request.result == UnityWebRequest.Result.Success )
                 {
