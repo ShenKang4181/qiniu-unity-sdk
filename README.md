@@ -9,12 +9,15 @@ newtonsoft-json
 https://github.com/Cysharp/UniTask
 
 # 安装
->https://github.com/ShenKang4181/qiniu-unity-sdk
+```
+https://github.com/ShenKang4181/qiniu-unity-sdk
+```
 
 # 使用
 
 ## 上传
->public static async UniTask<HttpResult> UploadAsync( byte[ ] data , string saveKey , IProgress<float> progress = null )
+```csharp
+public static async UniTask<HttpResult> UploadAsync( byte[ ] data , string saveKey , IProgress<float> progress = null )
     {
         var mac = new Mac( ACCESS_KEY , SECRET_KEY );
         var putPolicy = new PutPolicy
@@ -36,3 +39,4 @@ https://github.com/Cysharp/UniTask
         Debug.Log( result );
         return result;
     }
+```
