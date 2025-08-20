@@ -12,7 +12,7 @@ namespace Qiniu.Storage
 
 		private static object rwLock = new object();
 
-		public static Zone QueryZone(string accessKey, string bucket)
+		public static async Cysharp.Threading.Tasks.UniTask<Zone> QueryZone(string accessKey, string bucket)
 		{
 			Zone zone = null;
 			string key = string.Format("{0}:{1}", accessKey, bucket);
@@ -32,7 +32,7 @@ namespace Qiniu.Storage
 			{
 				string url = string.Format("https://uc.qbox.me/v2/query?ak={0}&bucket={1}", accessKey, bucket);
 				HttpManager httpManager = new HttpManager(false);
-				httpResult = httpManager.Get(url, null);
+				httpResult = await httpManager.Get(url, null);
 				if (httpResult.Code != 200)
 				{
 					throw new Exception("code: " + httpResult.Code + ", text: " + httpResult.Text + ", ref-text:" + httpResult.RefText);

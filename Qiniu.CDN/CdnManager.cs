@@ -44,7 +44,7 @@ namespace Qiniu.CDN
 			return string.Format("{0}/v2/tune/log/list", "http://fusion.qiniuapi.com");
 		}
 
-		public RefreshResult RefreshUrlsAndDirs(string[] urls, string[] dirs)
+		public async Cysharp.Threading.Tasks.UniTask<RefreshResult> RefreshUrlsAndDirs(string[] urls, string[] dirs)
 		{
 			RefreshRequest refreshRequest = new RefreshRequest(urls, dirs);
 			RefreshResult refreshResult = new RefreshResult();
@@ -53,7 +53,7 @@ namespace Qiniu.CDN
 				string url = refreshEntry();
 				string data = refreshRequest.ToJsonStr();
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.PostJson(url, data, token);
+				HttpResult hr = await httpManager.PostJson(url, data, token);
 				refreshResult.Shadow(hr);
 			}
 			catch (Exception ex)
@@ -71,17 +71,17 @@ namespace Qiniu.CDN
 			return refreshResult;
 		}
 
-		public RefreshResult RefreshUrls(string[] urls)
+		public async Cysharp.Threading.Tasks.UniTask<RefreshResult> RefreshUrls(string[] urls)
 		{
-			return RefreshUrlsAndDirs(urls, null);
+			return await RefreshUrlsAndDirs(urls, null);
 		}
 
-		public RefreshResult RefreshDirs(string[] dirs)
+		public async Cysharp.Threading.Tasks.UniTask<RefreshResult> RefreshDirs(string[] dirs)
 		{
-			return RefreshUrlsAndDirs(null, dirs);
+			return await RefreshUrlsAndDirs(null, dirs);
 		}
 
-		public PrefetchResult PrefetchUrls(string[] urls)
+		public async Cysharp.Threading.Tasks.UniTask<PrefetchResult> PrefetchUrls(string[] urls)
 		{
 			PrefetchRequest prefetchRequest = new PrefetchRequest();
 			prefetchRequest.AddUrls(urls);
@@ -91,7 +91,7 @@ namespace Qiniu.CDN
 				string url = prefetchEntry();
 				string data = prefetchRequest.ToJsonStr();
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.PostJson(url, data, token);
+				HttpResult hr = await httpManager.PostJson(url, data, token);
 				prefetchResult.Shadow(hr);
 			}
 			catch (Exception ex)
@@ -109,7 +109,7 @@ namespace Qiniu.CDN
 			return prefetchResult;
 		}
 
-		public BandwidthResult GetBandwidthData(string[] domains, string startDate, string endDate, string granularity)
+		public async Cysharp.Threading.Tasks.UniTask<BandwidthResult> GetBandwidthData(string[] domains, string startDate, string endDate, string granularity)
 		{
 			BandwidthRequest bandwidthRequest = new BandwidthRequest();
 			bandwidthRequest.Domains = string.Join(";", domains);
@@ -122,7 +122,7 @@ namespace Qiniu.CDN
 				string url = bandwidthEntry();
 				string data = bandwidthRequest.ToJsonStr();
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.PostJson(url, data, token);
+				HttpResult hr = await httpManager.PostJson(url, data, token);
 				bandwidthResult.Shadow(hr);
 			}
 			catch (Exception ex)
@@ -140,7 +140,7 @@ namespace Qiniu.CDN
 			return bandwidthResult;
 		}
 
-		public FluxResult GetFluxData(string[] domains, string startDate, string endDate, string granularity)
+		public async Cysharp.Threading.Tasks.UniTask<FluxResult> GetFluxData(string[] domains, string startDate, string endDate, string granularity)
 		{
 			FluxRequest fluxRequest = new FluxRequest();
 			fluxRequest.Domains = string.Join(";", domains);
@@ -153,7 +153,7 @@ namespace Qiniu.CDN
 				string url = fluxEntry();
 				string data = fluxRequest.ToJsonStr();
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.PostJson(url, data, token);
+				HttpResult hr = await httpManager.PostJson(url, data, token);
 				fluxResult.Shadow(hr);
 			}
 			catch (Exception ex)
@@ -171,7 +171,7 @@ namespace Qiniu.CDN
 			return fluxResult;
 		}
 
-		public LogListResult GetCdnLogList(string[] domains, string day)
+		public async Cysharp.Threading.Tasks.UniTask<LogListResult> GetCdnLogList(string[] domains, string day)
 		{
 			LogListRequest logListRequest = new LogListRequest();
 			logListRequest.Domains = string.Join(";", domains);
@@ -182,7 +182,7 @@ namespace Qiniu.CDN
 				string url = logListEntry();
 				string data = logListRequest.ToJsonStr();
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.PostJson(url, data, token);
+				HttpResult hr = await httpManager.PostJson(url, data, token);
 				logListResult.Shadow(hr);
 			}
 			catch (Exception ex)
@@ -206,7 +206,7 @@ namespace Qiniu.CDN
 			string text2 = string.Format("/{0}", Uri.EscapeUriString(fileName));
 			string str = string.Format("{0}{1}{2}", encryptKey, text2, text);
 			string text3 = Hashing.CalcMD5X(str);
-			string text4 = null;
+			//string text4 = null;
 			if (!string.IsNullOrEmpty(query))
 			{
 				return string.Format("{0}{1}?{2}&sign={3}&t={4}", host, text2, query, text3, text);

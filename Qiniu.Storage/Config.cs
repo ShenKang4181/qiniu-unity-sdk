@@ -18,57 +18,57 @@ namespace Qiniu.Storage
 
 		public int MaxRetryTimes = 3;
 
-		public string RsHost(string ak, string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<string> RsHost(string ak, string bucket)
 		{
 			string arg = (UseHttps ? "https://" : "http://");
 			Zone zone = Zone;
 			if (zone == null)
 			{
-				zone = ZoneHelper.QueryZone(ak, bucket);
+				zone = await ZoneHelper.QueryZone(ak, bucket);
 			}
 			return string.Format("{0}{1}", arg, zone.RsHost);
 		}
 
-		public string RsfHost(string ak, string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<string> RsfHost(string ak, string bucket)
 		{
 			string arg = (UseHttps ? "https://" : "http://");
 			Zone zone = Zone;
 			if (zone == null)
 			{
-				zone = ZoneHelper.QueryZone(ak, bucket);
+				zone = await ZoneHelper.QueryZone(ak, bucket);
 			}
 			return string.Format("{0}{1}", arg, zone.RsfHost);
 		}
 
-		public string ApiHost(string ak, string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<string> ApiHost(string ak, string bucket)
 		{
 			string arg = (UseHttps ? "https://" : "http://");
 			Zone zone = Zone;
 			if (zone == null)
 			{
-				zone = ZoneHelper.QueryZone(ak, bucket);
+				zone = await ZoneHelper.QueryZone(ak, bucket);
 			}
 			return string.Format("{0}{1}", arg, zone.ApiHost);
 		}
 
-		public string IovipHost(string ak, string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<string> IovipHost(string ak, string bucket)
 		{
 			string arg = (UseHttps ? "https://" : "http://");
 			Zone zone = Zone;
 			if (zone == null)
 			{
-				zone = ZoneHelper.QueryZone(ak, bucket);
+				zone = await ZoneHelper.QueryZone(ak, bucket);
 			}
 			return string.Format("{0}{1}", arg, zone.IovipHost);
 		}
 
-		public string UpHost(string ak, string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<string> UpHost(string ak, string bucket)
 		{
 			string arg = (UseHttps ? "https://" : "http://");
 			Zone zone = Zone;
 			if (zone == null)
 			{
-				zone = ZoneHelper.QueryZone(ak, bucket);
+				zone = await ZoneHelper.QueryZone(ak, bucket);
 			}
 			string arg2 = zone.SrcUpHosts[0];
 			if (UseCdnDomains)

@@ -19,12 +19,12 @@ namespace Qiniu.Storage
 			httpManager = new HttpManager(false);
 		}
 
-		public HttpResult UploadFile(string localFile, string key, string token, PutExtra extra)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra extra)
 		{
 			try
 			{
 				FileStream stream = new FileStream(localFile, FileMode.Open);
-				return UploadStream(stream, key, token, extra);
+				return await UploadStream(stream, key, token, extra);
 			}
 			catch (Exception ex)
 			{
@@ -34,13 +34,13 @@ namespace Qiniu.Storage
 			}
 		}
 
-		public HttpResult UploadData(byte[] data, string key, string token, PutExtra extra)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadData(byte[] data, string key, string token, PutExtra extra)
 		{
 			MemoryStream stream = new MemoryStream(data);
-			return UploadStream(stream, key, token, extra);
+			return await UploadStream(stream, key, token, extra);
 		}
 
-		public HttpResult UploadStream(Stream stream, string key, string token, PutExtra putExtra)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string token, PutExtra putExtra)
 		{
 			if (putExtra == null)
 			{
@@ -131,9 +131,9 @@ namespace Qiniu.Storage
 					{
 						return HttpResult.InvalidToken;
 					}
-					string url = config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
+					string url = await config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
 					putExtra.ProgressHandler(stream.Length / 5, stream.Length);
-					httpResult = httpManager.PostMultipart(url, memoryStream2.ToArray(), text, null);
+					httpResult = await httpManager.PostMultipart(url, memoryStream2.ToArray(), text, null);
 					putExtra.ProgressHandler(stream.Length, stream.Length);
 					if (httpResult.Code == 200)
 					{

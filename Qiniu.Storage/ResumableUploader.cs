@@ -30,12 +30,12 @@ namespace Qiniu.Storage
 			httpManager = new HttpManager(false);
 		}
 
-		public HttpResult UploadFile(string localFile, string key, string token, PutExtra putExtra)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadFile(string localFile, string key, string token, PutExtra putExtra)
 		{
 			try
 			{
 				FileStream stream = new FileStream(localFile, FileMode.Open);
-				return UploadStream(stream, key, token, putExtra);
+				return await UploadStream(stream, key, token, putExtra);
 			}
 			catch (Exception ex)
 			{
@@ -45,7 +45,7 @@ namespace Qiniu.Storage
 			}
 		}
 
-		public HttpResult UploadStream(Stream stream, string key, string upToken, PutExtra putExtra)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> UploadStream(Stream stream, string key, string upToken, PutExtra putExtra)
 		{
 			HttpResult httpResult = new HttpResult();
 			if (putExtra == null)
@@ -188,7 +188,7 @@ namespace Qiniu.Storage
 					}
 					if (uploadControllerAction == UploadControllerAction.Activated)
 					{
-						HttpResult httpResult4 = MakeFile(key, length, key, upToken, putExtra, resumeInfo.Contexts);
+						HttpResult httpResult4 = await MakeFile(key, length, key, upToken, putExtra, resumeInfo.Contexts);
 						if (httpResult4.Code != 200)
 						{
 							httpResult.Shadow(httpResult4);
@@ -251,7 +251,7 @@ namespace Qiniu.Storage
 			}
 		}
 
-		private void MakeBlock(object resumeBlockerObj)
+		private async void MakeBlock(object resumeBlockerObj)
 		{
 			ResumeBlocker resumeBlocker = (ResumeBlocker)resumeBlockerObj;
 			ManualResetEvent doneEvent = resumeBlocker.DoneEvent;
@@ -291,13 +291,13 @@ namespace Qiniu.Storage
 							doneEvent.Set();
 							return;
 						}
-						string arg = config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
+						string arg = await config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
 						string url = string.Format("{0}/mkblk/{1}", arg, num);
 						string token = string.Format("UpToken {0}", uploadToken);
 						using (MemoryStream memoryStream = new MemoryStream(blockBuffer, 0, num))
 						{
 							byte[] data = memoryStream.ToArray();
-							httpResult = httpManager.PostData(url, data, token);
+							httpResult = await httpManager.PostData(url, data, token);
 							if (httpResult.Code == 200)
 							{
 								ResumeContext resumeContext = JsonConvert.DeserializeObject<ResumeContext>(httpResult.Text);
@@ -365,7 +365,7 @@ namespace Qiniu.Storage
 			}
 		}
 
-		private HttpResult MakeFile(string fileName, long size, string key, string upToken, PutExtra putExtra, string[] contexts)
+		private async Cysharp.Threading.Tasks.UniTask<HttpResult> MakeFile(string fileName, long size, string key, string upToken, PutExtra putExtra, string[] contexts)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
@@ -406,11 +406,11 @@ namespace Qiniu.Storage
 				{
 					return HttpResult.InvalidToken;
 				}
-				string text5 = config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
+				string text5 = await config.UpHost(accessKeyFromUpToken, bucketFromUpToken);
 				string url = string.Format("{0}/mkfile/{1}{2}{3}{4}{5}", text5, size, text2, text, text3, text4);
 				string data = string.Join(",", contexts);
 				string token = string.Format("UpToken {0}", upToken);
-				httpResult = httpManager.PostText(url, data, token);
+				httpResult = await httpManager.PostText(url, data, token);
 			}
 			catch (Exception ex)
 			{

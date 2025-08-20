@@ -39,7 +39,7 @@ namespace Qiniu.Http
 			return string.Format("-------{0}Boundary{1}", "QiniuCSharpSDK", Hashing.CalcMD5X(str));
 		}
 
-		public HttpResult Get(string url, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Get(string url, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -54,7 +54,7 @@ namespace Qiniu.Http
 				httpWebRequest.UserAgent = userAgent;
 				httpWebRequest.AllowAutoRedirect = allowAutoRedirect;
 				httpWebRequest.ServicePoint.Expect100Continue = false;
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -122,7 +122,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult Post(string url, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Post(string url, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -137,7 +137,7 @@ namespace Qiniu.Http
 				httpWebRequest.UserAgent = userAgent;
 				httpWebRequest.AllowAutoRedirect = allowAutoRedirect;
 				httpWebRequest.ServicePoint.Expect100Continue = false;
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -205,7 +205,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostData(string url, byte[] data, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostData(string url, byte[] data, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -230,7 +230,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -298,7 +298,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostData(string url, byte[] data, string mimeType, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostData(string url, byte[] data, string mimeType, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -323,7 +323,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -391,7 +391,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostJson(string url, string data, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostJson(string url, string data, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -416,7 +416,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -484,7 +484,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostText(string url, string data, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostText(string url, string data, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -509,7 +509,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -577,7 +577,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostForm(string url, Dictionary<string, string> kvData, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostForm(string url, Dictionary<string, string> kvData, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -607,7 +607,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -675,7 +675,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostForm(string url, string data, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostForm(string url, string data, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -700,7 +700,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -768,7 +768,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostForm(string url, byte[] data, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostForm(string url, byte[] data, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -793,7 +793,7 @@ namespace Qiniu.Http
 						stream.Flush();
 					}
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;
@@ -861,7 +861,7 @@ namespace Qiniu.Http
 			return hr;
 		}
 
-		public HttpResult PostMultipart(string url, byte[] data, string boundary, string token, bool binaryMode = false)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> PostMultipart(string url, byte[] data, string boundary, string token, bool binaryMode = false)
 		{
 			HttpResult hr = new HttpResult();
 			HttpWebRequest httpWebRequest = null;
@@ -883,7 +883,7 @@ namespace Qiniu.Http
 					stream.Write(data, 0, data.Length);
 					stream.Flush();
 				}
-				HttpWebResponse httpWebResponse = httpWebRequest.GetResponse() as HttpWebResponse;
+				HttpWebResponse httpWebResponse = (await httpWebRequest.GetResponseAsync()) as HttpWebResponse;
 				if (httpWebResponse != null)
 				{
 					hr.Code = (int)httpWebResponse.StatusCode;

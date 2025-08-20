@@ -24,12 +24,12 @@ namespace Qiniu.Storage
 			httpManager = new HttpManager(false);
 		}
 
-		public PfopResult Pfop(string bucket, string key, string fops, string pipeline, string notifyUrl, bool force)
+		public async Cysharp.Threading.Tasks.UniTask<PfopResult> Pfop(string bucket, string key, string fops, string pipeline, string notifyUrl, bool force)
 		{
 			PfopResult pfopResult = new PfopResult();
 			try
 			{
-				string url = string.Format("{0}/pfop/", config.ApiHost(mac.AccessKey, bucket));
+				string url = string.Format("{0}/pfop/", await config.ApiHost(mac.AccessKey, bucket));
 				StringBuilder stringBuilder = new StringBuilder();
 				stringBuilder.AppendFormat("bucket={0}&key={1}&fops={2}", StringHelper.UrlEncode(bucket), StringHelper.UrlEncode(key), StringHelper.UrlEncode(fops));
 				if (!string.IsNullOrEmpty(notifyUrl))
@@ -46,7 +46,7 @@ namespace Qiniu.Storage
 				}
 				byte[] bytes = Encoding.UTF8.GetBytes(stringBuilder.ToString());
 				string token = auth.CreateManageToken(url, bytes);
-				HttpResult hr = httpManager.PostForm(url, bytes, token);
+				HttpResult hr = await httpManager.PostForm(url, bytes, token);
 				pfopResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -66,33 +66,33 @@ namespace Qiniu.Storage
 			return pfopResult;
 		}
 
-		public PfopResult Pfop(string bucket, string key, string[] fops, string pipeline, string notifyUrl, bool force)
+		public async Cysharp.Threading.Tasks.UniTask<PfopResult> Pfop(string bucket, string key, string[] fops, string pipeline, string notifyUrl, bool force)
 		{
 			string fops2 = string.Join(";", fops);
-			return Pfop(bucket, key, fops2, pipeline, notifyUrl, force);
+			return await Pfop(bucket, key, fops2, pipeline, notifyUrl, force);
 		}
 
-		public PrefopResult Prefop(string persistentId)
+		public async Cysharp.Threading.Tasks.UniTask<PrefopResult> Prefop(string persistentId)
 		{
 			PrefopResult prefopResult = new PrefopResult();
 			string arg = (config.UseHttps ? "https://" : "http://");
 			string url = string.Format("{0}{1}/status/get/prefop?id={2}", arg, Config.DefaultApiHost, persistentId);
 			HttpManager httpManager = new HttpManager(false);
-			HttpResult hr = httpManager.Get(url, null);
+			HttpResult hr = await httpManager.Get(url, null);
 			prefopResult.Shadow(hr);
 			return prefopResult;
 		}
 
-		public HttpResult Dfop(string fop, string uri)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Dfop(string fop, string uri)
 		{
 			if (UrlHelper.IsValidUrl(uri))
 			{
-				return DfopUrl(fop, uri);
+				return await DfopUrl(fop, uri);
 			}
-			return DfopData(fop, uri);
+			return await DfopData(fop, uri);
 		}
 
-		public HttpResult DfopText(string fop, string text)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> DfopText(string fop, string text)
 		{
 			HttpResult httpResult = new HttpResult();
 			string arg = (config.UseHttps ? "https://" : "http://");
@@ -109,15 +109,15 @@ namespace Qiniu.Storage
 			stringBuilder.AppendLine(text);
 			stringBuilder.AppendLine(text3 + "--");
 			byte[] bytes = Encoding.UTF8.GetBytes(stringBuilder.ToString());
-			return httpManager.PostMultipart(url, bytes, text2, token, true);
+			return await httpManager.PostMultipart(url, bytes, text2, token, true);
 		}
 
-		public HttpResult DfopTextFile(string fop, string textFile)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> DfopTextFile(string fop, string textFile)
 		{
 			HttpResult httpResult = new HttpResult();
 			if (File.Exists(textFile))
 			{
-				httpResult = DfopText(fop, File.ReadAllText(textFile));
+				httpResult = await DfopText(fop, File.ReadAllText(textFile));
 			}
 			else
 			{
@@ -127,17 +127,17 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public HttpResult DfopUrl(string fop, string url)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> DfopUrl(string fop, string url)
 		{
 			HttpResult httpResult = new HttpResult();
 			string text = (config.UseHttps ? "https://" : "http://");
 			string text2 = StringHelper.UrlEncode(url);
 			string url2 = string.Format("{0}{1}/dfop?fop={2}&url={3}", text, Config.DefaultApiHost, fop, text2);
 			string token = auth.CreateManageToken(url2);
-			return httpManager.Post(url2, token, true);
+			return await httpManager.Post(url2, token, true);
 		}
 
-		public HttpResult DfopData(string fop, string localFile)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> DfopData(string fop, string localFile)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
@@ -165,7 +165,7 @@ namespace Qiniu.Storage
 				memoryStream.Write(bytes, 0, bytes.Length);
 				memoryStream.Write(array, 0, array.Length);
 				memoryStream.Write(bytes2, 0, bytes2.Length);
-				httpResult = httpManager.PostMultipart(url, memoryStream.ToArray(), text, token, true);
+				httpResult = await httpManager.PostMultipart(url, memoryStream.ToArray(), text, token, true);
 			}
 			catch (Exception ex)
 			{

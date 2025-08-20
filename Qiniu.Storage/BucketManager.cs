@@ -24,14 +24,14 @@ namespace Qiniu.Storage
 			this.config = config;
 		}
 
-		public StatResult Stat(string bucket, string key)
+		public async Cysharp.Threading.Tasks.UniTask<StatResult> Stat(string bucket, string key)
 		{
 			StatResult statResult = new StatResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, bucket), StatOp(bucket, key));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, bucket), StatOp(bucket, key));
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.Get(url, token);
+				HttpResult hr = await httpManager.Get(url, token);
 				statResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -51,7 +51,7 @@ namespace Qiniu.Storage
 			return statResult;
 		}
 
-		public BucketsResult Buckets(bool shared)
+		public async Cysharp.Threading.Tasks.UniTask<BucketsResult> Buckets(bool shared)
 		{
 			BucketsResult bucketsResult = new BucketsResult();
 			try
@@ -65,7 +65,7 @@ namespace Qiniu.Storage
 				}
 				string url = string.Format("{0}/buckets?shared={1}", arg2, arg3);
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.Get(url, token);
+				HttpResult hr = await httpManager.Get(url, token);
 				bucketsResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -85,14 +85,14 @@ namespace Qiniu.Storage
 			return bucketsResult;
 		}
 
-		public HttpResult Delete(string bucket, string key)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Delete(string bucket, string key)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, bucket), DeleteOp(bucket, key));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, bucket), DeleteOp(bucket, key));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -111,19 +111,19 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public HttpResult Copy(string srcBucket, string srcKey, string dstBucket, string dstKey)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Copy(string srcBucket, string srcKey, string dstBucket, string dstKey)
 		{
-			return Copy(srcBucket, srcKey, dstBucket, dstKey, false);
+			return await Copy(srcBucket, srcKey, dstBucket, dstKey, false);
 		}
 
-		public HttpResult Copy(string srcBucket, string srcKey, string dstBucket, string dstKey, bool force)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Copy(string srcBucket, string srcKey, string dstBucket, string dstKey, bool force)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, srcBucket), CopyOp(srcBucket, srcKey, dstBucket, dstKey, force));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, srcBucket), CopyOp(srcBucket, srcKey, dstBucket, dstKey, force));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -142,19 +142,19 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public HttpResult Move(string srcBucket, string srcKey, string dstBucket, string dstKey)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Move(string srcBucket, string srcKey, string dstBucket, string dstKey)
 		{
-			return Move(srcBucket, srcKey, dstBucket, dstKey, false);
+			return await Move(srcBucket, srcKey, dstBucket, dstKey, false);
 		}
 
-		public HttpResult Move(string srcBucket, string srcKey, string dstBucket, string dstKey, bool force)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Move(string srcBucket, string srcKey, string dstBucket, string dstKey, bool force)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, srcBucket), MoveOp(srcBucket, srcKey, dstBucket, dstKey, force));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, srcBucket), MoveOp(srcBucket, srcKey, dstBucket, dstKey, force));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -173,14 +173,14 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public HttpResult ChangeMime(string bucket, string key, string mimeType)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> ChangeMime(string bucket, string key, string mimeType)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, bucket), ChangeMimeOp(bucket, key, mimeType));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, bucket), ChangeMimeOp(bucket, key, mimeType));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -199,14 +199,14 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public HttpResult ChangeType(string bucket, string key, int fileType)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> ChangeType(string bucket, string key, int fileType)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, bucket), ChangeTypeOp(bucket, key, fileType));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, bucket), ChangeTypeOp(bucket, key, fileType));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -225,7 +225,7 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		private BatchResult Batch(string batchOps)
+		private async Cysharp.Threading.Tasks.UniTask<BatchResult> Batch(string batchOps)
 		{
 			BatchResult batchResult = new BatchResult();
 			try
@@ -235,7 +235,7 @@ namespace Qiniu.Storage
 				string url = text + "/batch";
 				byte[] bytes = Encoding.UTF8.GetBytes(batchOps);
 				string token = auth.CreateManageToken(url, bytes);
-				HttpResult hr = httpManager.PostForm(url, bytes, token);
+				HttpResult hr = await httpManager.PostForm(url, bytes, token);
 				batchResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -255,7 +255,7 @@ namespace Qiniu.Storage
 			return batchResult;
 		}
 
-		public BatchResult Batch(IList<string> ops)
+		public async Cysharp.Threading.Tasks.UniTask<BatchResult> Batch(IList<string> ops)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.AppendFormat("op={0}", ops[0]);
@@ -263,17 +263,17 @@ namespace Qiniu.Storage
 			{
 				stringBuilder.AppendFormat("&op={0}", ops[i]);
 			}
-			return Batch(stringBuilder.ToString());
+			return await Batch(stringBuilder.ToString());
 		}
 
-		public FetchResult Fetch(string resUrl, string bucket, string key)
+		public async Cysharp.Threading.Tasks.UniTask<FetchResult> Fetch(string resUrl, string bucket, string key)
 		{
 			FetchResult fetchResult = new FetchResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.IovipHost(mac.AccessKey, bucket), FetchOp(resUrl, bucket, key));
+				string url = string.Format("{0}{1}", await config.IovipHost(mac.AccessKey, bucket), FetchOp(resUrl, bucket, key));
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.Post(url, token);
+				HttpResult hr = await httpManager.Post(url, token);
 				fetchResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -293,14 +293,14 @@ namespace Qiniu.Storage
 			return fetchResult;
 		}
 
-		public HttpResult Prefetch(string bucket, string key)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> Prefetch(string bucket, string key)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = config.IovipHost(mac.AccessKey, bucket) + PrefetchOp(bucket, key);
+				string url = await config.IovipHost(mac.AccessKey, bucket) + PrefetchOp(bucket, key);
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{
@@ -319,7 +319,7 @@ namespace Qiniu.Storage
 			return httpResult;
 		}
 
-		public DomainsResult Domains(string bucket)
+		public async Cysharp.Threading.Tasks.UniTask<DomainsResult> Domains(string bucket)
 		{
 			DomainsResult domainsResult = new DomainsResult();
 			try
@@ -330,7 +330,7 @@ namespace Qiniu.Storage
 				string s = string.Format("tbl={0}", bucket);
 				byte[] bytes = Encoding.UTF8.GetBytes(s);
 				string token = auth.CreateManageToken(url, bytes);
-				HttpResult hr = httpManager.PostForm(url, bytes, token);
+				HttpResult hr = await httpManager.PostForm(url, bytes, token);
 				domainsResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -350,7 +350,7 @@ namespace Qiniu.Storage
 			return domainsResult;
 		}
 
-		public ListResult ListFiles(string bucket, string prefix, string marker, int limit, string delimiter)
+		public async Cysharp.Threading.Tasks.UniTask<ListResult> ListFiles(string bucket, string prefix, string marker, int limit, string delimiter)
 		{
 			ListResult listResult = new ListResult();
 			try
@@ -376,9 +376,9 @@ namespace Qiniu.Storage
 				{
 					stringBuilder.Append("&limit=" + limit);
 				}
-				string url = string.Format("{0}{1}", config.RsfHost(mac.AccessKey, bucket), stringBuilder.ToString());
+				string url = string.Format("{0}{1}", await config.RsfHost(mac.AccessKey, bucket), stringBuilder.ToString());
 				string token = auth.CreateManageToken(url);
-				HttpResult hr = httpManager.Post(url, token);
+				HttpResult hr = await httpManager.Post(url, token);
 				listResult.Shadow(hr);
 			}
 			catch (QiniuException ex)
@@ -398,14 +398,14 @@ namespace Qiniu.Storage
 			return listResult;
 		}
 
-		public HttpResult DeleteAfterDays(string bucket, string key, int deleteAfterDays)
+		public async Cysharp.Threading.Tasks.UniTask<HttpResult> DeleteAfterDays(string bucket, string key, int deleteAfterDays)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
-				string url = string.Format("{0}{1}", config.RsHost(mac.AccessKey, bucket), DeleteAfterDaysOp(bucket, key, deleteAfterDays));
+				string url = string.Format("{0}{1}", await config.RsHost(mac.AccessKey, bucket), DeleteAfterDaysOp(bucket, key, deleteAfterDays));
 				string token = auth.CreateManageToken(url);
-				httpResult = httpManager.Post(url, token);
+				httpResult = await httpManager.Post(url, token);
 			}
 			catch (QiniuException ex)
 			{

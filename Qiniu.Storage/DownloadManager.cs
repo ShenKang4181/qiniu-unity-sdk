@@ -31,13 +31,13 @@ namespace Qiniu.Storage
 			return string.Format("{0}/{1}", domain, Uri.EscapeUriString(fileName));
 		}
 
-		public static HttpResult Download(string url, string saveasFile)
+		public static async Cysharp.Threading.Tasks.UniTask<HttpResult> Download(string url, string saveasFile)
 		{
 			HttpResult httpResult = new HttpResult();
 			try
 			{
 				HttpManager httpManager = new HttpManager(false);
-				httpResult = httpManager.Get(url, null, true);
+				httpResult = await httpManager.Get(url, null, true);
 				if (httpResult.Code == 200)
 				{
 					using (FileStream fileStream = File.Create(saveasFile, httpResult.Data.Length))

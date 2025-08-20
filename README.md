@@ -5,3 +5,4 @@
 <br/>
 # 依赖
 newtonsoft-json
+https://github.com/Cysharp/UniTask

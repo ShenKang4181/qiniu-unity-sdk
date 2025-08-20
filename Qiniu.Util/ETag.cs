@@ -9,7 +9,7 @@ namespace Qiniu.Util
 
 		private static int BLOCK_SHA1_SIZE = 20;
 
-		public static string CalcHash(string filePath)
+		public static async Cysharp.Threading.Tasks.UniTask<string> CalcHash(string filePath)
 		{
 			string result = "";
 			try
@@ -21,7 +21,7 @@ namespace Qiniu.Util
 					byte[] array2 = new byte[BLOCK_SHA1_SIZE + 1];
 					if (length <= 4194304)
 					{
-						int num = fileStream.Read(array, 0, 4194304);
+						int num = await fileStream.ReadAsync(array, 0, 4194304);
 						byte[] array3 = new byte[num];
 						Array.Copy(array, array3, num);
 						byte[] array4 = Hashing.CalcSHA1(array3);
@@ -34,7 +34,7 @@ namespace Qiniu.Util
 						byte[] array5 = new byte[BLOCK_SHA1_SIZE * num2];
 						for (int i = 0; i < num2; i++)
 						{
-							int num3 = fileStream.Read(array, 0, 4194304);
+							int num3 = await fileStream.ReadAsync(array, 0, 4194304);
 							byte[] array6 = new byte[num3];
 							Array.Copy(array, array6, num3);
 							byte[] array7 = Hashing.CalcSHA1(array6);
