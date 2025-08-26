@@ -10,7 +10,7 @@ https://github.com/Cysharp/UniTask
 
 # 安装
 ```
-https://github.com/ShenKang4181/qiniu-unity-sdk
+https://github.com/ShenKang4181/qiniu-unity-sdk.git
 ```
 
 # 使用
