@@ -104,9 +104,9 @@ namespace Qiniu.Storage
 					int num2 = 0;
 					putExtra.ProgressHandler(0L, stream.Length);
 					MemoryStream memoryStream = new MemoryStream();
-					while ((num2 = stream.Read(buffer, 0, num)) != 0)
+					while ((num2 = (await stream.ReadAsync(buffer, 0, num))) != 0)
 					{
-						memoryStream.Write(buffer, 0, num2);
+						await memoryStream.WriteAsync(buffer, 0, num2);
 					}
 					uint num3 = CRC32.CheckSumBytes(memoryStream.ToArray());
 					stringBuilder.AppendLine("Content-Disposition: form-data; name=\"crc32\"");
@@ -125,9 +125,9 @@ namespace Qiniu.Storage
 					byte[] array = memoryStream.ToArray();
 					byte[] bytes2 = Encoding.UTF8.GetBytes(stringBuilder2.ToString());
 					MemoryStream memoryStream2 = new MemoryStream();
-					memoryStream2.Write(bytes, 0, bytes.Length);
-					memoryStream2.Write(array, 0, array.Length);
-					memoryStream2.Write(bytes2, 0, bytes2.Length);
+					await memoryStream2.WriteAsync(bytes, 0, bytes.Length);
+					await memoryStream2.WriteAsync( array, 0, array.Length);
+					await memoryStream2.WriteAsync( bytes2, 0, bytes2.Length);
 					string accessKeyFromUpToken = UpToken.GetAccessKeyFromUpToken(token);
 					string bucketFromUpToken = UpToken.GetBucketFromUpToken(token);
 					if (accessKeyFromUpToken == null || bucketFromUpToken == null)
