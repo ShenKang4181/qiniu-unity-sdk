@@ -7,7 +7,7 @@ namespace Qiniu.CDN
 {
 	public class CdnManager
 	{
-		private const string FUSION_API_HOST = "http://fusion.qiniuapi.com";
+		private const string FUSION_API_HOST = "https://fusion.qiniuapi.com";
 
 		private Auth auth;
 
@@ -21,27 +21,27 @@ namespace Qiniu.CDN
 
 		private string refreshEntry()
 		{
-			return string.Format("{0}/v2/tune/refresh", "http://fusion.qiniuapi.com");
+			return string.Format("{0}/v2/tune/refresh", "https://fusion.qiniuapi.com");
 		}
 
 		private string prefetchEntry()
 		{
-			return string.Format("{0}/v2/tune/prefetch", "http://fusion.qiniuapi.com");
+			return string.Format("{0}/v2/tune/prefetch", "https://fusion.qiniuapi.com");
 		}
 
 		private string bandwidthEntry()
 		{
-			return string.Format("{0}/v2/tune/bandwidth", "http://fusion.qiniuapi.com");
+			return string.Format("{0}/v2/tune/bandwidth", "https://fusion.qiniuapi.com");
 		}
 
 		private string fluxEntry()
 		{
-			return string.Format("{0}/v2/tune/flux", "http://fusion.qiniuapi.com");
+			return string.Format("{0}/v2/tune/flux", "https://fusion.qiniuapi.com");
 		}
 
 		private string logListEntry()
 		{
-			return string.Format("{0}/v2/tune/log/list", "http://fusion.qiniuapi.com");
+			return string.Format("{0}/v2/tune/log/list", "https://fusion.qiniuapi.com");
 		}
 
 		public async Cysharp.Threading.Tasks.UniTask<RefreshResult> RefreshUrlsAndDirs(string[] urls, string[] dirs)
